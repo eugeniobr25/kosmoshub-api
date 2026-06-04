@@ -45,7 +45,7 @@ Para suportar a complexidade dos dados astronómicos sem onerar a base de dados,
 
 ## 🚀 Próximos Passos (Roadmap)
 - [x] **Fase 1:** Modelação de Domínio e Arquitetura da Base de Dados Relacional.
-- [ ] **Fase 2:** Construção da Camada de Serviços, Repositórios e Controladores REST.
+- [x] **Fase 2:** Construção da Camada de Serviços, Repositórios e Controladores REST.
 - [ ] **Fase 3:** Segurança (Autenticação JWT) e Validações.
 - [ ] **Fase 4:** Consumo da API pelo Frontend (Angular).
 
