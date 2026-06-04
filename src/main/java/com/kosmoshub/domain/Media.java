@@ -8,6 +8,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "media")
@@ -18,15 +19,15 @@ import java.time.LocalDateTime;
 public class Media {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(name = "entity_id", nullable = false)
-    private Long entityId;
+    private UUID entityId;
 
     @Column(name = "entity_type", nullable = false)
     private String entityType;

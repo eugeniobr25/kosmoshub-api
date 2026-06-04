@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,12 +20,12 @@ public class MediaService {
         return mediaRepository.save(media);
     }
 
-    public Media getMediaById(Long id) {
+    public Media getMediaById(UUID id) {
         return mediaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Mídia não encontrada com o ID: " + id));
     }
 
-    public List<Media> getMediaByEntity(Long entityId, String entityType) {
+    public List<Media> getMediaByEntity(UUID entityId, String entityType) {
         return mediaRepository.findByEntityIdAndEntityType(entityId, entityType);
     }
 
@@ -32,7 +33,7 @@ public class MediaService {
     // Portanto, não temos método updateMedia() aqui.
 
     @Transactional
-    public void deleteMedia(Long id) {
+    public void deleteMedia(UUID id) {
         mediaRepository.deleteById(id);
     }
 }

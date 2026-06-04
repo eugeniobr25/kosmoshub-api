@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,17 +20,17 @@ public class ObservationPostService {
         return postRepository.save(post);
     }
 
-    public ObservationPost getPostById(Long id) {
+    public ObservationPost getPostById(UUID id) {
         return postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Postagem não encontrada com o ID: " + id));
     }
 
-    public List<ObservationPost> getPostsByUserId(Long userId) {
+    public List<ObservationPost> getPostsByUserId(UUID userId) {
         return postRepository.findByUserId(userId);
     }
 
     @Transactional
-    public ObservationPost updatePost(Long id, ObservationPost updatedData) {
+    public ObservationPost updatePost(UUID id, ObservationPost updatedData) {
         ObservationPost existingPost = getPostById(id);
 
         // A Nossa Lógica de Coluna Sombra (Proteção dos metadados de equipamento)
@@ -46,7 +47,7 @@ public class ObservationPostService {
     }
 
     @Transactional
-    public void deletePost(Long id) {
+    public void deletePost(UUID id) {
         postRepository.deleteById(id);
     }
 }

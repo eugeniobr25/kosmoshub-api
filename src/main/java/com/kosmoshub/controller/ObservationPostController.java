@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -22,22 +23,22 @@ public class ObservationPostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ObservationPost> getPostById(@PathVariable Long id) {
+    public ResponseEntity<ObservationPost> getPostById(@PathVariable UUID id) {
         return ResponseEntity.ok(postService.getPostById(id));
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ObservationPost>> getPostsByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<ObservationPost>> getPostsByUserId(@PathVariable UUID userId) {
         return ResponseEntity.ok(postService.getPostsByUserId(userId));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ObservationPost> updatePost(@PathVariable Long id, @RequestBody ObservationPost post) {
+    public ResponseEntity<ObservationPost> updatePost(@PathVariable UUID id, @RequestBody ObservationPost post) {
         return ResponseEntity.ok(postService.updatePost(id, post));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePost(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePost(@PathVariable UUID id) {
         postService.deletePost(id);
         return ResponseEntity.noContent().build();
     }

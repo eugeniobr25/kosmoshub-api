@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,17 +20,17 @@ public class ObservationPlanService {
         return planRepository.save(plan);
     }
 
-    public ObservationPlan getPlanById(Long id) {
+    public ObservationPlan getPlanById(UUID id) {
         return planRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Plano de observação não encontrado com o ID: " + id));
     }
 
-    public List<ObservationPlan> getPlansByUserId(Long userId) {
+    public List<ObservationPlan> getPlansByUserId(UUID userId) {
         return planRepository.findByUserId(userId);
     }
 
     @Transactional
-    public ObservationPlan updatePlan(Long id, ObservationPlan updatedData) {
+    public ObservationPlan updatePlan(UUID id, ObservationPlan updatedData) {
         ObservationPlan existingPlan = getPlanById(id);
 
         if (updatedData.getTargetName() != null) existingPlan.setTargetName(updatedData.getTargetName());
@@ -41,7 +42,7 @@ public class ObservationPlanService {
     }
 
     @Transactional
-    public void deletePlan(Long id) {
+    public void deletePlan(UUID id) {
         planRepository.deleteById(id);
     }
 }

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/media")
@@ -22,17 +23,17 @@ public class MediaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Media> getMediaById(@PathVariable Long id) {
+    public ResponseEntity<Media> getMediaById(@PathVariable UUID id) {
         return ResponseEntity.ok(mediaService.getMediaById(id));
     }
 
     @GetMapping("/entity/{entityType}/{entityId}")
-    public ResponseEntity<List<Media>> getMediaByEntity(@PathVariable String entityType, @PathVariable Long entityId) {
+    public ResponseEntity<List<Media>> getMediaByEntity(@PathVariable String entityType, @PathVariable UUID entityId) {
         return ResponseEntity.ok(mediaService.getMediaByEntity(entityId, entityType));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMedia(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteMedia(@PathVariable UUID id) {
         mediaService.deleteMedia(id);
         return ResponseEntity.noContent().build();
     }

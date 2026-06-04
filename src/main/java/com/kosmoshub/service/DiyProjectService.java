@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +20,7 @@ public class DiyProjectService {
         return diyProjectRepository.save(project);
     }
 
-    public DiyProject getProjectById(Long id) {
+    public DiyProject getProjectById(UUID id) {
         return diyProjectRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Projeto DIY não encontrado com o ID: " + id));
     }
@@ -29,7 +30,7 @@ public class DiyProjectService {
     }
 
     @Transactional
-    public DiyProject updateProject(Long id, DiyProject updatedData) {
+    public DiyProject updateProject(UUID id, DiyProject updatedData) {
         DiyProject existingProject = getProjectById(id);
 
         if (updatedData.getContent() != null && !updatedData.getContent().equals(existingProject.getContent())) {
@@ -53,7 +54,7 @@ public class DiyProjectService {
     }
 
     @Transactional
-    public void deleteProject(Long id) {
+    public void deleteProject(UUID id) {
         diyProjectRepository.deleteById(id);
     }
 }

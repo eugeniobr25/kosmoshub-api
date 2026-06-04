@@ -5,11 +5,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface DiyProjectRepository extends JpaRepository<DiyProject, Long> {
+public interface DiyProjectRepository extends JpaRepository<DiyProject, UUID> {
 
-    List<DiyProject> findByUserId(Long userId);
+    List<DiyProject> findByUserId(UUID userId);
 
     List<DiyProject> findByIsPublicTrueAndIsFinishedTrue();
 }

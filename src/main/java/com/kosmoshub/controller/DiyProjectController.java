@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/projects")
@@ -22,7 +23,7 @@ public class DiyProjectController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DiyProject> getProjectById(@PathVariable Long id) {
+    public ResponseEntity<DiyProject> getProjectById(@PathVariable UUID id) {
         return ResponseEntity.ok(projectService.getProjectById(id));
     }
 
@@ -32,12 +33,12 @@ public class DiyProjectController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DiyProject> updateProject(@PathVariable Long id, @RequestBody DiyProject project) {
+    public ResponseEntity<DiyProject> updateProject(@PathVariable UUID id, @RequestBody DiyProject project) {
         return ResponseEntity.ok(projectService.updateProject(id, project));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProject(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProject(@PathVariable UUID id) {
         projectService.deleteProject(id);
         return ResponseEntity.noContent().build();
     }

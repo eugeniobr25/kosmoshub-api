@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,17 +20,17 @@ public class InteractionService {
         return interactionRepository.save(interaction);
     }
 
-    public Interaction getInteractionById(Long id) {
+    public Interaction getInteractionById(UUID id) {
         return interactionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Interação não encontrada com o ID: " + id));
     }
 
-    public List<Interaction> getInteractionsByEntity(Long entityId, String entityType) {
+    public List<Interaction> getInteractionsByEntity(UUID entityId, String entityType) {
         return interactionRepository.findByEntityIdAndEntityType(entityId, entityType);
     }
 
     @Transactional
-    public Interaction updateInteraction(Long id, Interaction updatedData) {
+    public Interaction updateInteraction(UUID id, Interaction updatedData) {
         Interaction existingInteraction = getInteractionById(id);
 
         // A Nossa Lógica de Coluna Sombra (Proteção do texto do comentário)
@@ -42,7 +43,7 @@ public class InteractionService {
     }
 
     @Transactional
-    public void deleteInteraction(Long id) {
+    public void deleteInteraction(UUID id) {
         interactionRepository.deleteById(id);
     }
 }
