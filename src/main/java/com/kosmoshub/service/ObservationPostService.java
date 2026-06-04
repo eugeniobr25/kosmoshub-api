@@ -1,0 +1,52 @@
+package com.kosmoshub.service;
+
+import com.kosmoshub.domain.ObservationPost;
+import com.kosmoshub.repository.ObservationPostRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class ObservationPostService {
+
+    private final ObservationPostRepository postRepository;
+
+    @Transactional
+    public ObservationPost createPost(ObservationPost post) {
+        return postRepository.save(post);
+    }
+
+    public ObservationPost getPostById(Long id) {
+        return postRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Postagem não encontrada com o ID: " + id));
+    }
+
+    public List<ObservationPost> getPostsByUserId(Long userId) {
+        return postRepository.findByUserId(userId);
+    }
+
+    @Transactional
+    public ObservationPost updatePost(Long id, ObservationPost updatedData) {
+        ObservationPost existingPost = getPostById(id);
+
+        // A Nossa Lógica de Coluna Sombra (Proteção dos metadados de equipamento)
+        if (updatedData.getEquipmentMetadata() != null && !updatedData.getEquipmentMetadata().equals(existingPost.getEquipmentMetadata())) {
+            existingPost.setPreviousEquipmentMetadata(existingPost.getEquipmentMetadata());
+            existingPost.setEquipmentMetadata(updatedData.getEquipmentMetadata());
+        }
+
+        if (updatedData.getTargetName() != null) {
+            existingPost.setTargetName(updatedData.getTargetName());
+        }
+
+        return postRepository.save(existingPost);
+    }
+
+    @Transactional
+    public void deletePost(Long id) {
+        postRepository.deleteById(id);
+    }
+}
