@@ -14,9 +14,14 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     @Transactional
     public User createUser(User user) {
+        // Encripta a senha antes de guardar no banco de dados!
+        String senhaCriptografada = passwordEncoder.encode(user.getPassword());
+        user.setPassword(senhaCriptografada);
+
         return userRepository.save(user);
     }
 
