@@ -25,8 +25,8 @@ public class ObservationPlanService {
                 .orElseThrow(() -> new RuntimeException("Plano de observação não encontrado com o ID: " + id));
     }
 
-    public List<ObservationPlan> getPlansByUserId(UUID userId) {
-        return planRepository.findByUserId(userId);
+    public org.springframework.data.domain.Page<ObservationPlan> getPlansByUser(java.util.UUID userId, org.springframework.data.domain.Pageable pageable) {
+        return planRepository.findByUserId(userId, pageable);
     }
 
     @Transactional

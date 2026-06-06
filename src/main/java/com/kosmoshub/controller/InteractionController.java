@@ -2,6 +2,7 @@ package com.kosmoshub.controller;
 
 import com.kosmoshub.domain.Interaction;
 import com.kosmoshub.service.InteractionService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class InteractionController {
     private final InteractionService interactionService;
 
     @PostMapping
-    public ResponseEntity<Interaction> createInteraction(@RequestBody Interaction interaction) {
+    public ResponseEntity<Interaction> createInteraction(@Valid @RequestBody Interaction interaction) {
         return ResponseEntity.status(HttpStatus.CREATED).body(interactionService.createInteraction(interaction));
     }
 
@@ -33,7 +34,7 @@ public class InteractionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Interaction> updateInteraction(@PathVariable UUID id, @RequestBody Interaction interaction) {
+    public ResponseEntity<Interaction> updateInteraction(@PathVariable UUID id, @Valid @RequestBody Interaction interaction) {
         return ResponseEntity.ok(interactionService.updateInteraction(id, interaction));
     }
 

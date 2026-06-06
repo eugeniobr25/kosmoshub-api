@@ -10,5 +10,5 @@ import java.util.UUID;
 @Repository
 public interface ObservationPostRepository extends JpaRepository<ObservationPost, UUID> {
 
-    List<ObservationPost> findByUserId(UUID userId);
+    org.springframework.data.domain.Page<ObservationPost> findByUserId(java.util.UUID userId, org.springframework.data.domain.Pageable pageable);
 }

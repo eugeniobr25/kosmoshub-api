@@ -2,12 +2,16 @@ package com.kosmoshub.controller;
 
 import com.kosmoshub.domain.DiyProject;
 import com.kosmoshub.service.DiyProjectService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -18,7 +22,7 @@ public class DiyProjectController {
     private final DiyProjectService projectService;
 
     @PostMapping
-    public ResponseEntity<DiyProject> createProject(@RequestBody DiyProject project) {
+    public ResponseEntity<DiyProject> createProject(@Valid @RequestBody DiyProject project) {
         return ResponseEntity.status(HttpStatus.CREATED).body(projectService.createProject(project));
     }
 
@@ -28,12 +32,13 @@ public class DiyProjectController {
     }
 
     @GetMapping("/public")
-    public ResponseEntity<List<DiyProject>> getPublicFinishedProjects() {
-        return ResponseEntity.ok(projectService.getPublicFinishedProjects());
+    public ResponseEntity<Page<DiyProject>> getPublicProjects(
+            @PageableDefault(size = 10) Pageable pageable) {
+        return ResponseEntity.ok(projectService.getPublicFinishedProjects((SpringDataWebProperties.Pageable) pageable));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DiyProject> updateProject(@PathVariable UUID id, @RequestBody DiyProject project) {
+    public ResponseEntity<DiyProject> updateProject(@PathVariable UUID id, @Valid @RequestBody DiyProject project) {
         return ResponseEntity.ok(projectService.updateProject(id, project));
     }
 

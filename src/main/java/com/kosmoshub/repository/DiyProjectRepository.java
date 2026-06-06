@@ -12,5 +12,5 @@ public interface DiyProjectRepository extends JpaRepository<DiyProject, UUID> {
 
     List<DiyProject> findByUserId(UUID userId);
 
-    List<DiyProject> findByIsPublicTrueAndIsFinishedTrue();
+    org.springframework.data.domain.Page<DiyProject> findByIsPublicTrueAndIsFinishedTrue(org.springframework.data.domain.Pageable pageable);
 }

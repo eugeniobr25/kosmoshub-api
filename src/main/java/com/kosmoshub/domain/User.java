@@ -1,6 +1,9 @@
 package com.kosmoshub.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,12 +31,18 @@ public class User implements UserDetails {
     private UUID id;
 
     @Column(nullable = false, unique = true)
+    @NotBlank(message = "O nome de utilizador é obrigatório.")
+    @Size(min = 3, max = 50, message = "O username deve ter entre 3 e 50 caracteres.")
     private String username;
 
     @Column(nullable = false, unique = true)
+    @NotBlank(message = "O email é obrigatório.")
+    @Email(message = "Formato de email inválido.")
     private String email;
 
     @Column(nullable = false)
+    @NotBlank(message = "A senha é obrigatória.")
+    @Size(min = 6, message = "A senha deve ter pelo menos 6 caracteres.")
     private String password;
 
     @Column(name = "avatar_url")

@@ -10,7 +10,7 @@ import java.util.UUID;
 @Repository
 public interface ObservationPlanRepository extends JpaRepository<ObservationPlan, UUID> {
 
-    List<ObservationPlan> findByUserId(UUID userId);
+    org.springframework.data.domain.Page<ObservationPlan> findByUserId(java.util.UUID userId, org.springframework.data.domain.Pageable pageable);
 
     List<ObservationPlan> findByStatus(String status);
 }

@@ -2,6 +2,7 @@ package com.kosmoshub.controller;
 
 import com.kosmoshub.domain.ObservationPost;
 import com.kosmoshub.service.ObservationPostService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class ObservationPostController {
     private final ObservationPostService postService;
 
     @PostMapping
-    public ResponseEntity<ObservationPost> createPost(@RequestBody ObservationPost post) {
+    public ResponseEntity<ObservationPost> createPost(@Valid @RequestBody ObservationPost post) {
         return ResponseEntity.status(HttpStatus.CREATED).body(postService.createPost(post));
     }
 
@@ -28,12 +29,14 @@ public class ObservationPostController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ObservationPost>> getPostsByUserId(@PathVariable UUID userId) {
-        return ResponseEntity.ok(postService.getPostsByUserId(userId));
+    public ResponseEntity<org.springframework.data.domain.Page<ObservationPost>> getPostsByUser(
+            @PathVariable java.util.UUID userId,
+            @org.springframework.data.web.PageableDefault(size = 10) org.springframework.data.domain.Pageable pageable) {
+        return ResponseEntity.ok(postService.getPostsByUser(userId, pageable));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ObservationPost> updatePost(@PathVariable UUID id, @RequestBody ObservationPost post) {
+    public ResponseEntity<ObservationPost> updatePost(@PathVariable UUID id, @Valid @RequestBody ObservationPost post) {
         return ResponseEntity.ok(postService.updatePost(id, post));
     }
 

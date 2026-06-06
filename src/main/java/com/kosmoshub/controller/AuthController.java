@@ -3,6 +3,8 @@ package com.kosmoshub.controller;
 import com.kosmoshub.domain.User;
 import com.kosmoshub.repository.UserRepository;
 import com.kosmoshub.security.TokenService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +23,10 @@ public class AuthController {
     private final TokenService tokenService;
 
     // Criamos um Record rápido apenas para receber os dados do JSON do frontend
-    public record LoginRequest(String email, String password) {}
+    public record LoginRequest(@NotBlank String email, @NotBlank String password) {}
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
 
         // 1. Procura o utilizador pelo email na base de dados
         User user = userRepository.findByEmail(request.email())

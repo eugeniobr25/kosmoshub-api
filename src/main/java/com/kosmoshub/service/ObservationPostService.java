@@ -25,8 +25,8 @@ public class ObservationPostService {
                 .orElseThrow(() -> new RuntimeException("Postagem não encontrada com o ID: " + id));
     }
 
-    public List<ObservationPost> getPostsByUserId(UUID userId) {
-        return postRepository.findByUserId(userId);
+    public org.springframework.data.domain.Page<ObservationPost> getPostsByUser(java.util.UUID userId, org.springframework.data.domain.Pageable pageable) {
+        return postRepository.findByUserId(userId, pageable);
     }
 
     @Transactional

@@ -2,6 +2,7 @@ package com.kosmoshub.controller;
 
 import com.kosmoshub.domain.ObservationPlan;
 import com.kosmoshub.service.ObservationPlanService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class ObservationPlanController {
     private final ObservationPlanService planService;
 
     @PostMapping
-    public ResponseEntity<ObservationPlan> createPlan(@RequestBody ObservationPlan plan) {
+    public ResponseEntity<ObservationPlan> createPlan(@Valid @RequestBody ObservationPlan plan) {
         return ResponseEntity.status(HttpStatus.CREATED).body(planService.createPlan(plan));
     }
 
@@ -28,12 +29,14 @@ public class ObservationPlanController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ObservationPlan>> getPlansByUserId(@PathVariable UUID userId) {
-        return ResponseEntity.ok(planService.getPlansByUserId(userId));
+    public ResponseEntity<org.springframework.data.domain.Page<ObservationPlan>> getPlansByUser(
+            @PathVariable java.util.UUID userId,
+            @org.springframework.data.web.PageableDefault(size = 10) org.springframework.data.domain.Pageable pageable) {
+        return ResponseEntity.ok(planService.getPlansByUser(userId, pageable));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ObservationPlan> updatePlan(@PathVariable UUID id, @RequestBody ObservationPlan plan) {
+    public ResponseEntity<ObservationPlan> updatePlan(@PathVariable UUID id, @Valid @RequestBody ObservationPlan plan) {
         return ResponseEntity.ok(planService.updatePlan(id, plan));
     }
 

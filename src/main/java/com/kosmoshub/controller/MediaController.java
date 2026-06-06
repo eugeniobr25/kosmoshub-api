@@ -2,6 +2,7 @@ package com.kosmoshub.controller;
 
 import com.kosmoshub.domain.Media;
 import com.kosmoshub.service.MediaService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class MediaController {
     private final MediaService mediaService;
 
     @PostMapping
-    public ResponseEntity<Media> createMedia(@RequestBody Media media) {
+    public ResponseEntity<Media> createMedia(@Valid @RequestBody Media media) {
         return ResponseEntity.status(HttpStatus.CREATED).body(mediaService.createMedia(media));
     }
 
