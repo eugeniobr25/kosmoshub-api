@@ -1,6 +1,7 @@
 package com.kosmoshub.controller;
 
 import com.kosmoshub.domain.ObservationPost;
+import com.kosmoshub.dto.ObservationPostResponseDTO;
 import com.kosmoshub.service.ObservationPostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,20 +20,26 @@ public class ObservationPostController {
     private final ObservationPostService postService;
 
     @PostMapping
-    public ResponseEntity<ObservationPost> createPost(@Valid @RequestBody ObservationPost post) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(postService.createPost(post));
+    public ResponseEntity<ObservationPostResponseDTO> createPost(@Valid @RequestBody ObservationPost post) {
+        ObservationPost createdPost = postService.createPost(post);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ObservationPostResponseDTO.fromEntity(createdPost));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ObservationPost> getPostById(@PathVariable UUID id) {
-        return ResponseEntity.ok(postService.getPostById(id));
+    public ResponseEntity<ObservationPostResponseDTO> getPostById(@PathVariable UUID id) {
+        ObservationPost post = postService.getPostById(id);
+        return ResponseEntity.ok(ObservationPostResponseDTO.fromEntity(post));
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<org.springframework.data.domain.Page<ObservationPost>> getPostsByUser(
-            @PathVariable java.util.UUID userId,
+    public ResponseEntity<org.springframework.data.domain.Page<ObservationPostResponseDTO>> getPostsByUser(
+            @PathVariable UUID userId,
             @org.springframework.data.web.PageableDefault(size = 10) org.springframework.data.domain.Pageable pageable) {
-        return ResponseEntity.ok(postService.getPostsByUser(userId, pageable));
+
+        org.springframework.data.domain.Page<ObservationPost> postsPage = postService.getPostsByUser(userId, pageable);
+
+        return ResponseEntity.ok(postsPage.map(ObservationPostResponseDTO::fromEntity));
     }
 
     @PutMapping("/{id}")

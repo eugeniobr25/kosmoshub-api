@@ -3,6 +3,7 @@ package com.kosmoshub.service;
 import com.kosmoshub.domain.User;
 import com.kosmoshub.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +31,7 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("Utilizador não encontrado com o ID: " + id));
     }
 
-    public List<User> getAllUsers() {
+    public List<User> getAllUsers(Pageable pageable) {
         return userRepository.findAll();
     }
 

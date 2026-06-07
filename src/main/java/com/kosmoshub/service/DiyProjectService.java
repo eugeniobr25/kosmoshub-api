@@ -3,7 +3,6 @@ package com.kosmoshub.service;
 import com.kosmoshub.domain.DiyProject;
 import com.kosmoshub.repository.DiyProjectRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,7 @@ public class DiyProjectService {
                 .orElseThrow(() -> new RuntimeException("Projeto DIY não encontrado com o ID: " + id));
     }
 
-    public Page<DiyProject> getPublicFinishedProjects(SpringDataWebProperties.Pageable pageable) {
+    public Page<DiyProject> getPublicFinishedProjects(Pageable pageable) {
         return diyProjectRepository.findByIsPublicTrueAndIsFinishedTrue((Pageable) pageable);
     }
 
