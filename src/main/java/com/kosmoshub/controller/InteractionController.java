@@ -1,6 +1,8 @@
 package com.kosmoshub.controller;
 
 import com.kosmoshub.domain.Interaction;
+import com.kosmoshub.dto.InteractionCreateDTO;
+import com.kosmoshub.dto.InteractionResponseDTO;
 import com.kosmoshub.service.InteractionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,32 +20,48 @@ public class InteractionController {
 
     private final InteractionService interactionService;
 
-    // NOTA ARQUITETURAL: No futuro, faremos aqui o mesmo que fizemos no UserController,
-    // substituindo a Entidade Interaction crua por InteractionCreateDTO e InteractionResponseDTO
-    // para blindagem total contra Mass Assignment. Por agora, vamos focar em compilar e migrar!
-
     @PostMapping
-    public ResponseEntity<Interaction> createInteraction(@Valid @RequestBody Interaction interaction) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(interactionService.createInteraction(interaction));
+    public ResponseEntity<InteractionResponseDTO> createInteraction(@Valid @RequestBody InteractionCreateDTO dto) {
+        Interaction interaction = new Interaction();
+        interaction.setEntityId(dto.entityId());
+        interaction.setEntityType(dto.entityType());
+        interaction.setType(dto.type());
+        interaction.setContent(dto.content());
+
+        Interaction created = interactionService.createInteraction(interaction);
+        return ResponseEntity.status(HttpStatus.CREATED).body(InteractionResponseDTO.fromEntity(created));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Interaction> getInteractionById(@PathVariable UUID id) {
-        return ResponseEntity.ok(interactionService.getInteractionById(id));
+    public ResponseEntity<InteractionResponseDTO> getInteractionById(@PathVariable UUID id) {
+        Interaction interaction = interactionService.getInteractionById(id);
+        return ResponseEntity.ok(InteractionResponseDTO.fromEntity(interaction));
     }
 
-    // A MÁGICA AQUI: O Spring converte a String da URL diretamente para o nosso Enum!
     @GetMapping("/entity/{entityType}/{entityId}")
-    public ResponseEntity<List<Interaction>> getInteractionsByEntity(
+    public ResponseEntity<List<InteractionResponseDTO>> getInteractionsByEntity(
             @PathVariable Interaction.EntityType entityType,
             @PathVariable UUID entityId) {
 
-        return ResponseEntity.ok(interactionService.getInteractionsByEntity(entityId, entityType));
+        List<Interaction> interactions = interactionService.getInteractionsByEntity(entityId, entityType);
+
+        List<InteractionResponseDTO> responseList = interactions.stream()
+                .map(InteractionResponseDTO::fromEntity)
+                .toList();
+
+        return ResponseEntity.ok(responseList);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Interaction> updateInteraction(@PathVariable UUID id, @Valid @RequestBody Interaction interaction) {
-        return ResponseEntity.ok(interactionService.updateInteraction(id, interaction));
+    public ResponseEntity<InteractionResponseDTO> updateInteraction(
+            @PathVariable UUID id,
+            @Valid @RequestBody InteractionCreateDTO dto) {
+
+        Interaction updateData = new Interaction();
+        updateData.setContent(dto.content());
+
+        Interaction updated = interactionService.updateInteraction(id, updateData);
+        return ResponseEntity.ok(InteractionResponseDTO.fromEntity(updated));
     }
 
     @DeleteMapping("/{id}")

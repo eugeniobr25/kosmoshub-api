@@ -1,14 +1,18 @@
 package com.kosmoshub.controller;
 
 import com.kosmoshub.domain.ObservationPlan;
+import com.kosmoshub.dto.ObservationPlanCreateDTO;
+import com.kosmoshub.dto.ObservationPlanResponseDTO;
 import com.kosmoshub.service.ObservationPlanService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -19,25 +23,39 @@ public class ObservationPlanController {
     private final ObservationPlanService planService;
 
     @PostMapping
-    public ResponseEntity<ObservationPlan> createPlan(@Valid @RequestBody ObservationPlan plan) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(planService.createPlan(plan));
+    public ResponseEntity<ObservationPlanResponseDTO> createPlan(@Valid @RequestBody ObservationPlanCreateDTO dto) {
+        ObservationPlan plan = new ObservationPlan();
+        plan.setTargetName(dto.targetName());
+        plan.setPlannedTimestamp(dto.plannedTimestamp());
+        if (dto.notifyInAdvance() != null) plan.setNotifyInAdvance(dto.notifyInAdvance());
+
+        ObservationPlan createdPlan = planService.createPlan(plan);
+        return ResponseEntity.status(HttpStatus.CREATED).body(ObservationPlanResponseDTO.fromEntity(createdPlan));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ObservationPlan> getPlanById(@PathVariable UUID id) {
-        return ResponseEntity.ok(planService.getPlanById(id));
+    public ResponseEntity<ObservationPlanResponseDTO> getPlanById(@PathVariable UUID id) {
+        ObservationPlan plan = planService.getPlanById(id);
+        return ResponseEntity.ok(ObservationPlanResponseDTO.fromEntity(plan));
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<org.springframework.data.domain.Page<ObservationPlan>> getPlansByUser(
-            @PathVariable java.util.UUID userId,
-            @org.springframework.data.web.PageableDefault(size = 10) org.springframework.data.domain.Pageable pageable) {
-        return ResponseEntity.ok(planService.getPlansByUser(userId, pageable));
+    public ResponseEntity<Page<ObservationPlanResponseDTO>> getPlansByUser(
+            @PathVariable UUID userId,
+            @PageableDefault(size = 10) Pageable pageable) {
+        Page<ObservationPlan> plansPage = planService.getPlansByUser(userId, pageable);
+        return ResponseEntity.ok(plansPage.map(ObservationPlanResponseDTO::fromEntity));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ObservationPlan> updatePlan(@PathVariable UUID id, @Valid @RequestBody ObservationPlan plan) {
-        return ResponseEntity.ok(planService.updatePlan(id, plan));
+    public ResponseEntity<ObservationPlanResponseDTO> updatePlan(@PathVariable UUID id, @Valid @RequestBody ObservationPlanCreateDTO dto) {
+        ObservationPlan updateData = new ObservationPlan();
+        updateData.setTargetName(dto.targetName());
+        updateData.setPlannedTimestamp(dto.plannedTimestamp());
+        if (dto.notifyInAdvance() != null) updateData.setNotifyInAdvance(dto.notifyInAdvance());
+
+        ObservationPlan updatedPlan = planService.updatePlan(id, updateData);
+        return ResponseEntity.ok(ObservationPlanResponseDTO.fromEntity(updatedPlan));
     }
 
     @DeleteMapping("/{id}")

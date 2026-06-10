@@ -16,7 +16,7 @@ public record DiyProjectResponseDTO(
     public static DiyProjectResponseDTO fromEntity(DiyProject project) {
         return new DiyProjectResponseDTO(
                 project.getId(),
-                UserResponseDTO.fromEntity(project.getUser()), // Converte o autor para DTO de forma segura
+                UserResponseDTO.fromEntity(project.getUser()),
                 project.getTitle(),
                 project.getContent(),
                 project.getAverageRating(),

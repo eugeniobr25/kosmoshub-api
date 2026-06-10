@@ -9,7 +9,8 @@ public record UserResponseDTO(
         String email,
         String avatarUrl,
         String bio,
-        Integer totalScore
+        Integer totalScore,
+        User.Role role
 ) {
     public static UserResponseDTO fromEntity(User user) {
         return new UserResponseDTO(
@@ -18,7 +19,8 @@ public record UserResponseDTO(
                 user.getEmail(),
                 user.getAvatarUrl(),
                 user.getBio(),
-                user.getTotalScore()
+                user.getTotalScore(),
+                user.getRole()
         );
     }
 }

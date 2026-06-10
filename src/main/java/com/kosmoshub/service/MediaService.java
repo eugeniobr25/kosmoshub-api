@@ -1,6 +1,7 @@
 package com.kosmoshub.service;
 
 import com.kosmoshub.domain.Media;
+import com.kosmoshub.exception.ResourceNotFoundException;
 import com.kosmoshub.repository.MediaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,18 +23,20 @@ public class MediaService {
 
     public Media getMediaById(UUID id) {
         return mediaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Mídia não encontrada com o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Mídia não encontrada com o ID: " + id));
     }
 
-    public List<Media> getMediaByEntity(UUID entityId, String entityType) {
+    public List<Media> getMediaByEntity(UUID entityId, Media.EntityType entityType) {
         return mediaRepository.findByEntityIdAndEntityType(entityId, entityType);
     }
-
-    // Nota de Arquitetura: Ficheiros de mídia (URLs) não são "editados", são removidos e substituídos.
-    // Portanto, não temos método updateMedia() aqui.
 
     @Transactional
     public void deleteMedia(UUID id) {
         mediaRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void deleteMediaByEntity(UUID entityId, Media.EntityType entityType) {
+        mediaRepository.deleteByEntityIdAndEntityType(entityId, entityType);
     }
 }

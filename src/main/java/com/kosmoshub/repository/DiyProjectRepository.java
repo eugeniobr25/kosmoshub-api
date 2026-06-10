@@ -22,7 +22,6 @@ public interface DiyProjectRepository extends JpaRepository<DiyProject, UUID> {
     @EntityGraph(attributePaths = {"user"})
     Page<DiyProject> findByIsPublicTrueAndIsFinishedTrue(Pageable pageable);
 
-    // O Pedaço que faltava para a exclusão de conta em Cascata
     @Modifying
     @Query("DELETE FROM DiyProject d WHERE d.user.id = :userId")
     void deleteByUserId(@Param("userId") UUID userId);

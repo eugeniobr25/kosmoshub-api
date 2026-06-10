@@ -61,7 +61,6 @@ public class ObservationPost {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    // A Mágica da Coluna Sombra Descentralizada
     @PreUpdate
     public void onPreUpdate() {
         this.previousEquipmentMetadata = this.equipmentMetadata;

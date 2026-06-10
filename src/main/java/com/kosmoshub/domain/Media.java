@@ -11,7 +11,10 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "media")
+@Table(name = "media", indexes = {
+        @Index(name = "idx_media_user", columnList = "user_id"),
+        @Index(name = "idx_media_entity", columnList = "entity_id, entity_type")
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,8 +32,9 @@ public class Media {
     @Column(name = "entity_id", nullable = false)
     private UUID entityId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "entity_type", nullable = false)
-    private String entityType;
+    private EntityType entityType;
 
     @Column(nullable = false)
     private String url;
@@ -41,4 +45,8 @@ public class Media {
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+
+    public enum EntityType {
+        POST, DIY_PROJECT
+    }
 }

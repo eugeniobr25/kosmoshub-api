@@ -42,7 +42,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<Page<UserResponseDTO>> getAllUsers(@PageableDefault(size = 10) Pageable pageable) {
-        Page<User> usersPage = userService.getAllUsers(pageable); // Removi o cast (casting) desnecessário que causaria erro
+        Page<User> usersPage = userService.getAllUsers(pageable);
         return ResponseEntity.ok(usersPage.map(UserResponseDTO::fromEntity));
     }
 

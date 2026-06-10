@@ -6,7 +6,6 @@ import java.util.UUID;
 
 public record ObservationPostCreateDTO(
 
-        // O plano é opcional, logo não usamos @NotBlank, mas aceitamos o UUID
         UUID planId,
 
         @NotBlank(message = "O nome do alvo celeste é obrigatório.")

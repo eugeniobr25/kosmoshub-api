@@ -1,10 +1,12 @@
 package com.kosmoshub.service;
 
+import com.kosmoshub.domain.Interaction;
+import com.kosmoshub.domain.Media;
 import com.kosmoshub.domain.ObservationPost;
 import com.kosmoshub.exception.ResourceNotFoundException;
-import com.kosmoshub.repository.ObservationPostRepository;
 import com.kosmoshub.repository.InteractionRepository;
 import com.kosmoshub.repository.MediaRepository;
+import com.kosmoshub.repository.ObservationPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,7 +44,6 @@ public class ObservationPostService {
         if (updatedData.getEquipmentMetadata() != null) {
             existingPost.setEquipmentMetadata(updatedData.getEquipmentMetadata());
         }
-
         if (updatedData.getTargetName() != null) {
             existingPost.setTargetName(updatedData.getTargetName());
         }
@@ -52,8 +53,8 @@ public class ObservationPostService {
 
     @Transactional
     public void deletePost(UUID id) {
-        interactionRepository.deleteByEntityIdAndEntityType(id, com.kosmoshub.domain.Interaction.EntityType.POST);
-        mediaRepository.deleteByEntityIdAndEntityType(id, com.kosmoshub.domain.Interaction.EntityType.POST.name());
+        interactionRepository.deleteByEntityIdAndEntityType(id, Interaction.EntityType.POST);
+        mediaRepository.deleteByEntityIdAndEntityType(id, Media.EntityType.POST);
         postRepository.deleteById(id);
     }
 }

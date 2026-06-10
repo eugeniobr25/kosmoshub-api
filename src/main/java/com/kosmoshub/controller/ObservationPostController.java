@@ -24,12 +24,9 @@ public class ObservationPostController {
 
     @PostMapping
     public ResponseEntity<ObservationPostResponseDTO> createPost(@Valid @RequestBody ObservationPostCreateDTO dto) {
-        // Num ambiente real, podemos usar MapStruct para isso. Aqui fazemos o parse manual seguro:
         ObservationPost post = new ObservationPost();
         post.setTargetName(dto.targetName());
         post.setEquipmentMetadata(dto.equipmentMetadata());
-        // A vinculação do User e Plan seria feita na camada de Serviço usando o ID do usuário logado
-
         ObservationPost createdPost = postService.createPost(post);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ObservationPostResponseDTO.fromEntity(createdPost));

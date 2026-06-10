@@ -19,10 +19,8 @@ public interface ObservationPlanRepository extends JpaRepository<ObservationPlan
     @EntityGraph(attributePaths = {"user"})
     Page<ObservationPlan> findByUserId(UUID userId, Pageable pageable);
 
-    // Tipagem Forte: Utilizando o Enum correto no lugar da String insegura
     List<ObservationPlan> findByStatus(ObservationPlan.PlanStatus status);
 
-    // O Pedaço que faltava para a exclusão de conta em Cascata
     @Modifying
     @Query("DELETE FROM ObservationPlan o WHERE o.user.id = :userId")
     void deleteByUserId(@Param("userId") UUID userId);

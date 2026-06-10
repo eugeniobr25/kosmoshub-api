@@ -58,7 +58,6 @@ public class DiyProject {
     @Column(name = "previous_content", columnDefinition = "TEXT")
     private String previousContent;
 
-    // Automatizando a proteção do histórico (Coluna Sombra)
     @PreUpdate
     public void onPreUpdate() {
         this.previousContent = this.content;

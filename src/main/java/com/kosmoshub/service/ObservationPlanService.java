@@ -1,12 +1,14 @@
 package com.kosmoshub.service;
 
 import com.kosmoshub.domain.ObservationPlan;
+import com.kosmoshub.exception.ResourceNotFoundException;
 import com.kosmoshub.repository.ObservationPlanRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -22,10 +24,10 @@ public class ObservationPlanService {
 
     public ObservationPlan getPlanById(UUID id) {
         return planRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Plano de observação não encontrado com o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Plano de observação não encontrado com o ID: " + id));
     }
 
-    public org.springframework.data.domain.Page<ObservationPlan> getPlansByUser(java.util.UUID userId, org.springframework.data.domain.Pageable pageable) {
+    public Page<ObservationPlan> getPlansByUser(UUID userId, Pageable pageable) {
         return planRepository.findByUserId(userId, pageable);
     }
 

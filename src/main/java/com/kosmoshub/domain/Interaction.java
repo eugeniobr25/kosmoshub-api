@@ -59,7 +59,6 @@ public class Interaction {
         this.previousContent = this.content;
     }
 
-    // Enums definidos para blindar a API contra typos
     public enum EntityType {
         POST, DIY_PROJECT
     }

@@ -14,7 +14,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "observation_plans", indexes = {
         @Index(name = "idx_plan_user", columnList = "user_id"),
-        @Index(name = "idx_plan_date", columnList = "planned_timestamp") // Índice vital para as notificações
+        @Index(name = "idx_plan_date", columnList = "planned_timestamp")
 })
 @Getter
 @Setter
@@ -39,7 +39,6 @@ public class ObservationPlan {
     @Column(name = "notify_in_advance")
     private Boolean notifyInAdvance = true;
 
-    // Blindagem de payload: Trocando String por Enum
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PlanStatus status = PlanStatus.PENDING;
