@@ -1,6 +1,7 @@
 package com.kosmoshub.service;
 
 import com.kosmoshub.domain.Interaction;
+import com.kosmoshub.exception.ResourceNotFoundException;
 import com.kosmoshub.repository.InteractionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,10 +23,10 @@ public class InteractionService {
 
     public Interaction getInteractionById(UUID id) {
         return interactionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Interação não encontrada com o ID: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Interação não encontrada com o ID: " + id));
     }
 
-    public List<Interaction> getInteractionsByEntity(UUID entityId, String entityType) {
+    public List<Interaction> getInteractionsByEntity(UUID entityId, Interaction.EntityType entityType) {
         return interactionRepository.findByEntityIdAndEntityType(entityId, entityType);
     }
 
@@ -33,9 +34,7 @@ public class InteractionService {
     public Interaction updateInteraction(UUID id, Interaction updatedData) {
         Interaction existingInteraction = getInteractionById(id);
 
-        // A Nossa Lógica de Coluna Sombra (Proteção do texto do comentário)
-        if (updatedData.getContent() != null && !updatedData.getContent().equals(existingInteraction.getContent())) {
-            existingInteraction.setPreviousContent(existingInteraction.getContent());
+        if (updatedData.getContent() != null) {
             existingInteraction.setContent(updatedData.getContent());
         }
 

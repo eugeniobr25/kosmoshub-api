@@ -4,6 +4,7 @@ import com.kosmoshub.domain.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,15 +15,14 @@ import java.util.Date;
 @Service
 public class TokenService {
 
-    // A mágica acontece aqui: O Spring injeta o valor do application.properties direto nesta variável
     @Value("${jwt.secret}")
     private String secret;
 
     private static final long EXPIRATION_TIME = 7200000; // 2 horas
 
-    // Criamos um método para gerar a chave dinamicamente com o segredo injetado
     private Key getSignInKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes());
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String generateToken(User user) {
@@ -37,14 +37,6 @@ public class TokenService {
 
     public String extractEmail(String token) {
         return getClaims(token).getSubject();
-    }
-
-    public boolean isTokenValid(String token) {
-        try {
-            return getClaims(token).getExpiration().after(new Date());
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     private Claims getClaims(String token) {

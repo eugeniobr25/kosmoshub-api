@@ -1,15 +1,18 @@
 package com.kosmoshub.controller;
 
 import com.kosmoshub.domain.ObservationPost;
+import com.kosmoshub.dto.ObservationPostCreateDTO;
 import com.kosmoshub.dto.ObservationPostResponseDTO;
 import com.kosmoshub.service.ObservationPostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -20,7 +23,13 @@ public class ObservationPostController {
     private final ObservationPostService postService;
 
     @PostMapping
-    public ResponseEntity<ObservationPostResponseDTO> createPost(@Valid @RequestBody ObservationPost post) {
+    public ResponseEntity<ObservationPostResponseDTO> createPost(@Valid @RequestBody ObservationPostCreateDTO dto) {
+        // Num ambiente real, podemos usar MapStruct para isso. Aqui fazemos o parse manual seguro:
+        ObservationPost post = new ObservationPost();
+        post.setTargetName(dto.targetName());
+        post.setEquipmentMetadata(dto.equipmentMetadata());
+        // A vinculação do User e Plan seria feita na camada de Serviço usando o ID do usuário logado
+
         ObservationPost createdPost = postService.createPost(post);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ObservationPostResponseDTO.fromEntity(createdPost));
@@ -33,18 +42,22 @@ public class ObservationPostController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<org.springframework.data.domain.Page<ObservationPostResponseDTO>> getPostsByUser(
+    public ResponseEntity<Page<ObservationPostResponseDTO>> getPostsByUser(
             @PathVariable UUID userId,
-            @org.springframework.data.web.PageableDefault(size = 10) org.springframework.data.domain.Pageable pageable) {
+            @PageableDefault(size = 10) Pageable pageable) {
 
-        org.springframework.data.domain.Page<ObservationPost> postsPage = postService.getPostsByUser(userId, pageable);
-
+        Page<ObservationPost> postsPage = postService.getPostsByUser(userId, pageable);
         return ResponseEntity.ok(postsPage.map(ObservationPostResponseDTO::fromEntity));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ObservationPost> updatePost(@PathVariable UUID id, @Valid @RequestBody ObservationPost post) {
-        return ResponseEntity.ok(postService.updatePost(id, post));
+    public ResponseEntity<ObservationPostResponseDTO> updatePost(@PathVariable UUID id, @Valid @RequestBody ObservationPostCreateDTO dto) {
+        ObservationPost updateData = new ObservationPost();
+        updateData.setTargetName(dto.targetName());
+        updateData.setEquipmentMetadata(dto.equipmentMetadata());
+
+        ObservationPost updatedPost = postService.updatePost(id, updateData);
+        return ResponseEntity.ok(ObservationPostResponseDTO.fromEntity(updatedPost));
     }
 
     @DeleteMapping("/{id}")

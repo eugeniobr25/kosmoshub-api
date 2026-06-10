@@ -12,7 +12,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "interactions")
+@Table(name = "interactions", indexes = {
+        @Index(name = "idx_interaction_entity", columnList = "entity_id, entity_type")
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -30,11 +32,13 @@ public class Interaction {
     @Column(name = "entity_id", nullable = false)
     private UUID entityId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "entity_type", nullable = false)
-    private String entityType;
+    private EntityType entityType;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String type;
+    private InteractionType type;
 
     @Column(columnDefinition = "TEXT")
     private String content;
@@ -49,4 +53,18 @@ public class Interaction {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    @PreUpdate
+    public void onPreUpdate() {
+        this.previousContent = this.content;
+    }
+
+    // Enums definidos para blindar a API contra typos
+    public enum EntityType {
+        POST, DIY_PROJECT
+    }
+
+    public enum InteractionType {
+        COMMENT, QUESTION, ANSWER
+    }
 }

@@ -6,13 +6,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "observation_posts")
+@Table(name = "observation_posts", indexes = {
+        @Index(name = "idx_post_user", columnList = "user_id"),
+        @Index(name = "idx_post_plan", columnList = "plan_id")
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -34,8 +39,13 @@ public class ObservationPost {
     @Column(name = "target_name", nullable = false)
     private String targetName;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "equipment_metadata", columnDefinition = "jsonb")
     private String equipmentMetadata;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "previous_equipment_metadata", columnDefinition = "jsonb")
+    private String previousEquipmentMetadata;
 
     @Column(name = "average_rating")
     private Double averageRating = 0.0;
@@ -51,6 +61,9 @@ public class ObservationPost {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name = "previous_equipment_metadata", columnDefinition = "jsonb")
-    private String previousEquipmentMetadata;
+    // A Mágica da Coluna Sombra Descentralizada
+    @PreUpdate
+    public void onPreUpdate() {
+        this.previousEquipmentMetadata = this.equipmentMetadata;
+    }
 }

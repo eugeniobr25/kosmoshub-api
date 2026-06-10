@@ -1,6 +1,7 @@
 package com.kosmoshub.security;
 
 import com.kosmoshub.repository.UserRepository;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,32 +24,35 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // 1. Extrai o cabeçalho "Authorization" da requisição
         String authHeader = request.getHeader("Authorization");
 
-        // 2. Se não houver cabeçalho ou não começar com "Bearer ", passa a requisição adiante (será bloqueada pelo SecurityConfig se não for pública)
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ") || authHeader.length() <= 7) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // 3. Limpa a palavra "Bearer " e pega apenas o texto do token
         String token = authHeader.substring(7);
 
-        // 4. Se o token for válido e não estiver expirado
-        if (tokenService.isTokenValid(token)) {
+        try {
             String email = tokenService.extractEmail(token);
-            UserDetails userDetails = userRepository.findByEmail(email).orElse(null);
 
-            // 5. Autentica o utilizador no contexto de memória desta requisição específica
-            if (userDetails != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+            if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userRepository.findByEmail(email).orElse(null);
+
+                if (userDetails != null) {
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
             }
+        } catch (JwtException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("{\"error\": \"Acesso Negado: Token inválido, expirado ou malformado.\"}");
+            return;
         }
 
-        // 6. Continua o fluxo da requisição
         filterChain.doFilter(request, response);
     }
 }

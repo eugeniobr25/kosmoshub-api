@@ -1,7 +1,13 @@
 package com.kosmoshub.repository;
 
 import com.kosmoshub.domain.ObservationPlan;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,7 +16,14 @@ import java.util.UUID;
 @Repository
 public interface ObservationPlanRepository extends JpaRepository<ObservationPlan, UUID> {
 
-    org.springframework.data.domain.Page<ObservationPlan> findByUserId(java.util.UUID userId, org.springframework.data.domain.Pageable pageable);
+    @EntityGraph(attributePaths = {"user"})
+    Page<ObservationPlan> findByUserId(UUID userId, Pageable pageable);
 
-    List<ObservationPlan> findByStatus(String status);
+    // Tipagem Forte: Utilizando o Enum correto no lugar da String insegura
+    List<ObservationPlan> findByStatus(ObservationPlan.PlanStatus status);
+
+    // O Pedaço que faltava para a exclusão de conta em Cascata
+    @Modifying
+    @Query("DELETE FROM ObservationPlan o WHERE o.user.id = :userId")
+    void deleteByUserId(@Param("userId") UUID userId);
 }

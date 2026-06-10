@@ -12,7 +12,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "diy_projects")
+@Table(name = "diy_projects", indexes = {
+        @Index(name = "idx_diy_user", columnList = "user_id")
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -55,4 +57,10 @@ public class DiyProject {
 
     @Column(name = "previous_content", columnDefinition = "TEXT")
     private String previousContent;
+
+    // Automatizando a proteção do histórico (Coluna Sombra)
+    @PreUpdate
+    public void onPreUpdate() {
+        this.previousContent = this.content;
+    }
 }
