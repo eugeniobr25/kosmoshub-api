@@ -28,7 +28,6 @@ Este repositório contém a **API RESTful** que alimenta o ecossistema KósmosHu
 - **Core:** Java 21 | Spring Boot 3.5.14 (Web, Data JPA, Validation)
 - **Base de Dados:** PostgreSQL 17.5 | Flyway (Migrações)
 - **Segurança:** Spring Security | JWT (JSON Web Tokens) | BCrypt
-- **Documentação:** OpenAPI 3 (Swagger UI)
 - **Ferramentas:** Lombok, Maven
 
 ---
@@ -57,13 +56,19 @@ Implementámos um padrão de *1-Step Undo* diretamente no ciclo de vida do JPA (
 
 ---
 
-## 📚 Documentação da API
+## 📚 Documentação e Testes da API
 
-A API encontra-se totalmente documentada e testável através do **Swagger UI** (OpenAPI 3).
-Para explorar os endpoints, rodar a aplicação e aceder localmente a:
-`http://localhost:8080/swagger-ui/index.html`
+Embora a documentação via Swagger (OpenAPI 3) tenha sido validada nas fases iniciais de desenvolvimento, optámos por **descartá-la na atual versão da arquitetura**.
 
-*(Nota: O Swagger está configurado para suportar injeção de Bearer Token JWT para testes em rotas protegidas).*
+**O Motivo (Segurança e Clean Architecture):** A nossa implementação rigorosa de segurança *Zero Trust* e o bloqueio estrito de vazamentos através do `@ControllerAdvice` entram em conflito com a geração dinâmica de documentação pública da biblioteca. Para manter a superfície de ataque minimizada e evitar "vias verdes" não essenciais no `SecurityFilterChain`, a interface gráfica do Swagger foi removida.
+
+Para explorar, testar e consumir os *endpoints* RESTful do KósmosHub, recomendamos o uso de clientes HTTP profissionais:
+- **[Insomnia](https://insomnia.rest/)** ou **[Postman](https://www.postman.com/)**.
+
+**Como testar as rotas protegidas localmente:**
+1. Realize uma requisição `POST` para a rota de login (`/api/auth/login`) com credenciais válidas.
+2. Copie o token retornado na resposta JSON.
+3. Configure o seu cliente REST (Insomnia/Postman) para injetar este token no cabeçalho de Autorização (*Header*) da requisição, utilizando o prefixo `Bearer <seu_token_aqui>`.
 
 ---
 
@@ -74,4 +79,4 @@ Para explorar os endpoints, rodar a aplicação e aceder localmente a:
 - [x] **Fase 3:** Segurança (Spring Security + Autenticação JWT) e Validações.
 - [x] **Fase 4:** Auditoria Arquitetural (DTOs, Flyway, CORS, Tratamento Global de Erros, Índices e Paginação).
 - [ ] **Fase 5:** Início do Desenvolvimento do **Frontend (Cliente)**.
-    - *Stack Alvo:* Angular 17+ (Standalone Components, Signals), Tailwind CSS (focado num UI/UX "Red Mode" para preservação de visão noturna).
+  - *Stack Alvo:* Angular 17+ (Standalone Components, Signals), Tailwind CSS (focado num UI/UX "Red Mode" para preservação de visão noturna).
