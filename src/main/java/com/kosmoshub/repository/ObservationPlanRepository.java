@@ -16,6 +16,11 @@ import java.util.UUID;
 @Repository
 public interface ObservationPlanRepository extends JpaRepository<ObservationPlan, UUID> {
 
+    // Busca global blindada para o Feed
+    @EntityGraph(attributePaths = {"user"})
+    Page<ObservationPlan> findAll(Pageable pageable);
+
+    // 👇 A CORREÇÃO: O método que faltava para o seu Service não quebrar
     @EntityGraph(attributePaths = {"user"})
     Page<ObservationPlan> findByUserId(UUID userId, Pageable pageable);
 

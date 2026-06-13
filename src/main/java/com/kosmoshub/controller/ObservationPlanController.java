@@ -3,11 +3,14 @@ package com.kosmoshub.controller;
 import com.kosmoshub.domain.ObservationPlan;
 import com.kosmoshub.dto.ObservationPlanCreateDTO;
 import com.kosmoshub.dto.ObservationPlanResponseDTO;
+import com.kosmoshub.repository.ObservationPlanRepository;
 import com.kosmoshub.service.ObservationPlanService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +24,7 @@ import java.util.UUID;
 public class ObservationPlanController {
 
     private final ObservationPlanService planService;
+    private final ObservationPlanRepository planRepository; // Injetado para a agenda
 
     @PostMapping
     public ResponseEntity<ObservationPlanResponseDTO> createPlan(@Valid @RequestBody ObservationPlanCreateDTO dto) {
@@ -37,6 +41,18 @@ public class ObservationPlanController {
     public ResponseEntity<ObservationPlanResponseDTO> getPlanById(@PathVariable UUID id) {
         ObservationPlan plan = planService.getPlanById(id);
         return ResponseEntity.ok(ObservationPlanResponseDTO.fromEntity(plan));
+    }
+
+    // A NOSSA ROTA CORRIGIDA PARA A AGENDA (Ordem Crescente)
+    @GetMapping
+    public ResponseEntity<Page<ObservationPlanResponseDTO>> getLatestPlans(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ObservationPlan> plans = planRepository.findAll(pageable);
+
+        return ResponseEntity.ok(plans.map(ObservationPlanResponseDTO::fromEntity));
     }
 
     @GetMapping("/user/{userId}")
