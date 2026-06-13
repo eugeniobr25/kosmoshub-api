@@ -15,6 +15,9 @@ import java.util.UUID;
 @Repository
 public interface ObservationPostRepository extends JpaRepository<ObservationPost, UUID> {
 
+    @EntityGraph(attributePaths = {"user"})
+    Page<ObservationPost> findAll(Pageable pageable);
+
     @EntityGraph(attributePaths = {"user", "plan"})
     Page<ObservationPost> findByUserId(UUID userId, Pageable pageable);
 
